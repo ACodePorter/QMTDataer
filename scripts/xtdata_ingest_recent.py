@@ -1,30 +1,31 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
-xtdata 近期增量更新一键脚本。
-职责:
-    - 调用 run_ingest 按已有文件最新时间回溯少量 bar，增量拉取并合并
-    - 适合日常定时更新，减少下载量
-使用方式:
-    - 直接运行本文件即可
+xtdata 近期补齐一键脚本。
+
+Responsibilities:
+    - 以 recent-backfill 模式运行入库任务。
+    - 适用于日常增量更新场景，默认开启 auto_start + lookback。
+
+Internal Dependencies:
+    - core.ingest_runner
+
+External Systems:
+    - xtquant.xtdata（或兼容 xtdata）
+    - 本地文件系统
 """
 from __future__ import annotations
 
-from scripts.xtdata_ingest_integration_test import DEFAULT_SYMBOL_TEST, DEFAULT_ROOT, run_ingest
-
+from core.ingest_runner import run_profile
 
 
 def main() -> None:
-    """近期增量更新入口。"""
-    run_ingest(
-        symbols=DEFAULT_SYMBOL_TEST,
-        cycles=["1d", "1m"],
-        root=DEFAULT_ROOT,
-        start="20000101",
-        end="",
-        skip_download=False,
-        auto_start=True,
-        lookback=2,
-    )
+    """
+    一键执行 recent-backfill 模式。
+
+    Returns:
+        None
+    """
+    run_profile("recent-backfill")
 
 
 if __name__ == "__main__":

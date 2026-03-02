@@ -1,33 +1,31 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
-xtdata 全量更新一键脚本。
-职责:
-    - 调用 run_ingest 执行全量下载+写入，覆盖默认标的的 1d/1m 数据
-    - 参数固定为全量（不回溯起始、不跳过 download）
-使用方式:
-    - 直接运行本文件即可
+xtdata 全量下载一键脚本。
+
+Responsibilities:
+    - 以 full-download 模式运行入库任务。
+    - 适用于全量重建场景，默认采用非 merge 写入策略。
+
+Internal Dependencies:
+    - core.ingest_runner
+
+External Systems:
+    - xtquant.xtdata（或兼容 xtdata）
+    - 本地文件系统
 """
 from __future__ import annotations
 
-from scripts.xtdata_ingest_integration_test import (
-    DEFAULT_SYMBOLS,
-    DEFAULT_ROOT,
-    run_ingest,
-)
+from core.ingest_runner import run_profile
 
 
 def main() -> None:
-    """全量更新入口。"""
-    run_ingest(
-        symbols=DEFAULT_SYMBOLS,
-        cycles=["1d", "1m"],
-        root=DEFAULT_ROOT,
-        start="20000101",
-        end="",
-        skip_download=False,
-        auto_start=False,
-        lookback=2,
-    )
+    """
+    一键执行 full-download 模式。
+
+    Returns:
+        None
+    """
+    run_profile("full-download")
 
 
 if __name__ == "__main__":

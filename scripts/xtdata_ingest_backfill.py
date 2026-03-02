@@ -1,29 +1,31 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
-xtdata 全量回溯/补齐一键脚本。
-职责:
-    - 固定全量参数（不跳过 download，不自动起始），从 20000101 拉取至“今天+1 天”
-    - 适合在发现历史缺口或目录/格式调整后做一次全量补齐
-使用方式:
-    - 直接运行本文件即可
+xtdata 全量补齐一键脚本。
+
+Responsibilities:
+    - 以 full-backfill 模式运行入库任务。
+    - 适用于全区间补洞场景，默认采用 merge 写入策略。
+
+Internal Dependencies:
+    - core.ingest_runner
+
+External Systems:
+    - xtquant.xtdata（或兼容 xtdata）
+    - 本地文件系统
 """
 from __future__ import annotations
 
-from scripts.xtdata_ingest_integration_test import DEFAULT_SYMBOLS, DEFAULT_ROOT, run_ingest
+from core.ingest_runner import run_profile
 
 
 def main() -> None:
-    """全量回溯入口。"""
-    run_ingest(
-        symbols=DEFAULT_SYMBOLS,
-        cycles=["1d", "1m"],
-        root=DEFAULT_ROOT,
-        start="20000101",
-        end="",
-        skip_download=False,  # 强制 download_history_data
-        auto_start=False,     # 不基于历史回溯，直接全量覆盖合并
-        lookback=0,
-    )
+    """
+    一键执行 full-backfill 模式。
+
+    Returns:
+        None
+    """
+    run_profile("full-backfill")
 
 
 if __name__ == "__main__":
